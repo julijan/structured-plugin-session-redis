@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "strictBindCallApply": true,
+        "noUnusedLocals": true,
+        "moduleResolution" : "node16",
+        "outDir": "./build",
+        "module": "Node16",
+        "target": "ES6",
+        "alwaysStrict": true,
+        "allowSyntheticDefaultImports": true,
+        "declaration": true,
+        "isolatedDeclarations": true,
+        "noImplicitReturns": true,
+        "preserveSymlinks": true,
+        "removeComments": true,
+		"types": ["node"],
+        "rootDir": ".",
+		"skipLibCheck": true,
+        "paths": {
+            "/assets/ts/*": ["./assets/ts/*"],
+            "/assets/client-js/*": ["./system/*"],
+            "structured-fw/*": [
+                "./node_modules/structured-fw/build/*",
+                "./*"
+            ]
+        }
+    },
+    "include": ["structured.sessions.redis.ts"]
+}

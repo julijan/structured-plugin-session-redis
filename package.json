@@ -12,6 +12,10 @@
   "license": "MIT",
   "type": "module",
   "files": ["build/*"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julijan/structured-plugin-session-redis"
+  },
   "devDependencies": {
     "@types/node": "^26.4.1",
     "structured-fw": "^1.7.5"

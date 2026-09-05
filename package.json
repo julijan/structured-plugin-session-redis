@@ -1,6 +1,6 @@
 {
   "name": "structured-plugin-session-redis",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Plugin for Structured framework (structured-fw) allowing for Redis-persisted sessions.",
   "main": "build/structured.sessions.redis.js",
   "scripts": {

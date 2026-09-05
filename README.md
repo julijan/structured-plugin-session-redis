@@ -1,5 +1,5 @@
 # structured-plugin-session-redis
-This is a plugin for [Structured framework](https://www.npmjs.com/package/structured-plugin-session-redis) that allows for persistent sessions using Redis.
+This is a plugin for [Structured framework](https://www.npmjs.com/package/structured-fw) that allows for persistent sessions using Redis.
 
 To use the plugin, install it using:\
 `npm install structured-plugin-session-redis`

@@ -11,7 +11,7 @@
   "author": "Julijan Andjelic",
   "license": "MIT",
   "type": "module",
-  "files": ["build/*"],
+  "files": ["build/*", "README.md"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/julijan/structured-plugin-session-redis"

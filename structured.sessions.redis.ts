@@ -17,7 +17,7 @@ async function initClient(): Promise<void> {
 	}).connect();
 }
 
-async function redisLoad(): Promise<void> {
+async function redisLoad(sessionDurationSeconds: number): Promise<void> {
 	if (redisClient !== null) {
 		const keys: Array<string> = [];
 		for await (const chunk of redisClient.scanIterator({
@@ -34,7 +34,17 @@ async function redisLoad(): Promise<void> {
 				return prev;
 			}
 			const session = JSON.parse(sessionString) as SessionEntry;
-			prev[session.sessionId] = session;
+
+			const secondsSinceLastRequest = (Date.now() - session.lastRequest) / 1000;
+
+			if (secondsSinceLastRequest <= sessionDurationSeconds) {
+				// session still valid, keep it
+				prev[session.sessionId] = session;
+			} else {
+				// expired session, delete it from Redis
+				redisSessionRemove(session.sessionId);
+			}
+
 			return prev;
 		}, {} as Record<string, SessionEntry>);
 	}
@@ -89,7 +99,7 @@ export async function redisSessions(app: Application): Promise<void> {
 	app.on('sessionsStart', async () => {
 		// sessions enabled, load sessions from Redis
 		await initClient();
-		await redisLoad();
+		await redisLoad(app.config.session.durationSeconds);
 		app.session.load(sessions);
 	});
 

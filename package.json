@@ -1,0 +1,22 @@
+{
+  "name": "structured-plugin-session-redis",
+  "version": "0.1.1",
+  "description": "Plugin for Structured framework (structured-fw) allowing for Redis-persisted sessions.",
+  "main": "build/structured.sessions.redis.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "tsc"
+  },
+  "keywords": ["structured", "structured-fw", "plugin", "redis", "session"],
+  "author": "Julijan Andjelic",
+  "license": "MIT",
+  "type": "module",
+  "files": ["build/*"],
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "structured-fw": "^1.7.5"
+  },
+  "dependencies": {
+    "redis": "^6.2.1"
+  }
+}

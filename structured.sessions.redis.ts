@@ -4,7 +4,7 @@ import { deserializeObject, serializableObject } from 'structured-fw/Util';
 import { createHash } from 'crypto';
 import { createClient, RedisClientType } from 'redis';
 
-// requires Structured version >= 1.7.5
+// requires Structured version >= 1.7.8
 
 type RedisSessionOptions = {
 	sessionPrefix?: string,

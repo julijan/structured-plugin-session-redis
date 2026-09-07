@@ -1,5 +1,6 @@
 import { Application } from 'structured-fw/Application';
 import { SessionEntry } from 'structured-fw/Types';
+import { deserializeObject, serializableObject } from 'structured-fw/Util';
 import { createHash } from 'crypto';
 import { createClient, RedisClientType } from 'redis';
 
@@ -7,6 +8,7 @@ import { createClient, RedisClientType } from 'redis';
 
 type RedisSessionOptions = {
 	sessionPrefix?: string,
+	preserveTypes?: boolean,
 }
 
 let redisClient: RedisClientType | null = null;
@@ -41,12 +43,12 @@ async function redisLoad(sessionDurationSeconds: number): Promise<void> {
 				return prev;
 			}
 			const session = JSON.parse(sessionString) as SessionEntry;
-
-			const secondsSinceLastRequest = (Date.now() - session.lastRequest) / 1000;
+			const entry = options.preserveTypes ? deserializeObject(session) as SessionEntry : session;
+			const secondsSinceLastRequest = (Date.now() - entry.lastRequest) / 1000;
 
 			if (secondsSinceLastRequest <= sessionDurationSeconds) {
 				// session still valid, keep it
-				prev[session.sessionId] = session;
+				prev[entry.sessionId] = entry;
 			} else {
 				// expired session, delete it from Redis
 				redisSessionRemove(session.sessionId);
@@ -64,7 +66,8 @@ function sessionKey(sessionId: string): string {
 
 async function redisStoreSession(sessionId: string): Promise<void> {
 	if (redisClient === null || !(sessionId in sessions)) {return;}
-	await redisClient.set(sessionKey(sessionId), JSON.stringify(sessions[sessionId]));
+	const data = options.preserveTypes === true ? serializableObject(sessions[sessionId]) : sessions[sessionId];
+	await redisClient.set(sessionKey(sessionId), JSON.stringify(data));
 }
 
 async function redisValueSet(sessionId: string, key: string, value: any): Promise<void> {

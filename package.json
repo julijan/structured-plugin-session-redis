@@ -7,18 +7,27 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "tsc"
   },
-  "keywords": ["structured", "structured-fw", "plugin", "redis", "session"],
+  "keywords": [
+    "structured",
+    "structured-fw",
+    "plugin",
+    "redis",
+    "session"
+  ],
   "author": "Julijan Andjelic",
   "license": "MIT",
   "type": "module",
-  "files": ["build/*", "README.md"],
+  "files": [
+    "build/*",
+    "README.md"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/julijan/structured-plugin-session-redis"
   },
   "devDependencies": {
     "@types/node": "^26.4.1",
-    "structured-fw": "^1.7.5"
+    "structured-fw": "^1.7.8"
   },
   "dependencies": {
     "redis": "^6.2.1"

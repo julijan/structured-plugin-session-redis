@@ -5,7 +5,12 @@ import { createClient, RedisClientType } from 'redis';
 
 // requires Structured version >= 1.7.5
 
+type RedisSessionOptions = {
+	sessionPrefix?: string,
+}
+
 let redisClient: RedisClientType | null = null;
+let options: RedisSessionOptions = {};
 
 const sessionsKey = createHash('md5').update(import.meta.url).digest('hex') + '.sessions';
 
@@ -19,9 +24,11 @@ async function initClient(): Promise<void> {
 
 async function redisLoad(sessionDurationSeconds: number): Promise<void> {
 	if (redisClient !== null) {
+		const prefix = typeof options.sessionPrefix === 'string' ? options.sessionPrefix : sessionsKey;
+
 		const keys: Array<string> = [];
 		for await (const chunk of redisClient.scanIterator({
-			MATCH: `${sessionsKey}.*`,
+			MATCH: `${prefix}.*`,
 			COUNT: 100,
 		})) {
 			keys.push(...chunk);
@@ -51,7 +58,8 @@ async function redisLoad(sessionDurationSeconds: number): Promise<void> {
 }
 
 function sessionKey(sessionId: string): string {
-	return `${sessionsKey}.${sessionId}`;
+	const sessionPrefix = typeof options.sessionPrefix === 'string' ? options.sessionPrefix : sessionsKey;
+	return `${sessionPrefix}.${sessionId}`;
 }
 
 async function redisStoreSession(sessionId: string): Promise<void> {
@@ -94,7 +102,8 @@ async function redisClear(sessionId: string): Promise<void> {
 	}
 }
 
-export async function redisSessions(app: Application): Promise<void> {
+export async function redisSessions(app: Application, sessionOptions: RedisSessionOptions): Promise<void> {
+	options = sessionOptions;
 
 	app.on('sessionsStart', async () => {
 		// sessions enabled, load sessions from Redis

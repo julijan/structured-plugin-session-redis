@@ -9,6 +9,7 @@ import { createClient, RedisClientType } from 'redis';
 type RedisSessionOptions = {
 	sessionPrefix?: string,
 	preserveTypes?: boolean,
+	loadExpiredSessions?: boolean,
 }
 
 let redisClient: RedisClientType | null = null;
@@ -44,14 +45,20 @@ async function redisLoad(sessionDurationSeconds: number): Promise<void> {
 			}
 			const session = JSON.parse(sessionString) as SessionEntry;
 			const entry = options.preserveTypes ? deserializeObject(session) as SessionEntry : session;
-			const secondsSinceLastRequest = (Date.now() - entry.lastRequest) / 1000;
 
-			if (secondsSinceLastRequest <= sessionDurationSeconds) {
-				// session still valid, keep it
+			if (options.loadExpiredSessions === true) {
+				// load all sessions, including expired ones
+				// useful when user needs to handle the sessionExpired event
 				prev[entry.sessionId] = entry;
 			} else {
-				// expired session, delete it from Redis
-				redisSessionRemove(session.sessionId);
+				const secondsSinceLastRequest = (Date.now() - entry.lastRequest) / 1000;
+				if (secondsSinceLastRequest <= sessionDurationSeconds) {
+					// session still valid, keep it
+					prev[entry.sessionId] = entry;
+				} else {
+					// expired session, delete it from Redis
+					redisSessionRemove(session.sessionId);
+				}
 			}
 
 			return prev;

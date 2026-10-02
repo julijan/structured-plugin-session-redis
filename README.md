@@ -16,11 +16,12 @@ Options:
 type RedisSessionOptions = {
 	sessionPrefix?: string,
 	preserveTypes?: boolean,
+	loadExpiredSessions?: boolean,
 }
 ```
 
 `sessionPrefix` - sessions are stored in Redis with key [sessionPrefix].[sessionId], if omitted prefix is auto generated based on the app path\
-`preserveTypes` - if `true`, additional types will survive data serialization (Date, BigInt, RegExp, Map and Uint8Array)
-
+`preserveTypes` - if `true`, additional types will survive data serialization (Date, BigInt, RegExp, Map and Uint8Array)\
+`loadExpiredSessions` - if `true` expired sessions are not discarded when loading sessions. Useful when `sessionExpired` event needs to be handled. Expired sessions will be garbage collected by Structured, firing `sessionExpired` in the process
 
 You will no longer lose sessions when you restart the app.
